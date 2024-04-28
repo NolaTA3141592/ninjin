@@ -1,1 +1,2 @@
 # ninjin
+slackに送信した内容をdiscordに移してログを取りたい！
