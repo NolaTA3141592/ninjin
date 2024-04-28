@@ -7,6 +7,7 @@ import (
 	"net/http"
 
 	"github.com/bwmarrin/discordgo"
+	"github.com/slack-go/slack"
 )
 
 type SlackEvent struct {
@@ -67,6 +68,8 @@ func main() {
 		return
 	}
 
+	api := slack.New(SLACK_API_TOKEN)
+
 	SlackEventsEndPoint := "/slack/events"
 	
 	http.HandleFunc(SlackEventsEndPoint, func(w http.ResponseWriter, r *http.Request) {
@@ -78,7 +81,6 @@ func main() {
 
 		var event SlackEvent
 		err = json.Unmarshal(body, &event)
-		fmt.Printf("%s\n", event.Type)
 		if err != nil {
 			http.Error(w, "Failed to parse request body", http.StatusBadRequest)
 			return
@@ -103,7 +105,13 @@ func main() {
 				return
 			}
 			if jsonbody2["type"] == "message" {
-				discord.ChannelMessageSend(test_channel_id, fmt.Sprintf("[%s]: %s", jsonbody2["user"], jsonbody2["text"]))
+				userid := jsonbody2["user"]
+				userinfo, err := api.GetUserInfo(userid.(string))	
+				if err != nil {
+					http.Error(w, "Failed to get user info", http.StatusInternalServerError)
+					return
+				}
+				discord.ChannelMessageSend(test_channel_id, fmt.Sprintf("[%s]: %s", userinfo.RealName, jsonbody2["text"]))
 			}
 			return
 		}
