@@ -4,8 +4,9 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
-	"os"
 	"net/http"
+	"ninjin/util/SlackUtil"
+	"os"
 
 	"github.com/bwmarrin/discordgo"
 	"github.com/go-yaml/yaml"
@@ -17,42 +18,6 @@ type SlackEvent struct {
 	Channel	string `json:"channel"`
 	User 	string `json:"user"`
 	Text	string `json:"text"`
-}
-
-func varify(w http.ResponseWriter, r *http.Request, body []byte, SLACK_VERIFY_TOKEN string) {
-	var jsonbody map[string]interface{}
-	err := json.Unmarshal(body, &jsonbody)
-	if err != nil {
-		http.Error(w, "Failed to parse json", http.StatusBadRequest)
-		return
-	}
-
-	token, ok := jsonbody["token"].(string)
-	if !ok {
-		http.Error(w, "Missing token", http.StatusBadRequest)
-		return
-	}
-
-	eventType, ok := jsonbody["type"].(string)
-	if !ok {
-		http.Error(w, "Missing event type", http.StatusBadRequest)
-		return
-	}
-
-	if token != SLACK_VERIFY_TOKEN {
-		http.Error(w, "Invalid verification token", http.StatusUnauthorized)
-		return
-	}
-	
-	if eventType == "url_verification" {
-		challenge, ok := jsonbody["challenge"].(string)
-		if !ok {
-			http.Error(w, "Missing challenge", http.StatusBadRequest)
-			return
-		}
-		fmt.Fprint(w, challenge)
-	}
-	w.WriteHeader((http.StatusOK))
 }
 
 func main() {
@@ -101,7 +66,7 @@ func main() {
 		}
 
 		if event.Type == "url_verification" {
-			varify(w, r, body, SLACK_VERIFY_TOKEN)
+			SlackUtil.Verify(w, r, body, SLACK_VERIFY_TOKEN)
 			return
 		}
 
