@@ -4,5 +4,7 @@ services:
     build: .
     volumes: 
       - ./:/go/src
+    ports: 
+      -  "3000:3000"
     tty: true
     command: go run main.go
