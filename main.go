@@ -4,9 +4,11 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
+	"os"
 	"net/http"
 
 	"github.com/bwmarrin/discordgo"
+	"github.com/go-yaml/yaml"
 	"github.com/slack-go/slack"
 )
 
@@ -17,15 +19,7 @@ type SlackEvent struct {
 	Text	string `json:"text"`
 }
 
-const (
-	SLACK_API_TOKEN = "xoxb-6567041518326-7037473636820-KUTMSWnPrV4X3ngn5oyOqr41"
-	SLACK_VERIFY_TOKEN = "VeZpxISb8b0yqZwxQr2OX5ol"
-	DISCORD_API_TOKEN = "MTIwMjg3ODc0MDA5OTc2ODM1MQ.GsHYhv.6LAmr-TwUDmDCQNGiDgNuaxqUUA3qVVlaSL0x4"
-	test_channel_id = "1202886521842049056"
-)
-
-
-func varify(w http.ResponseWriter, r *http.Request, body []byte) {
+func varify(w http.ResponseWriter, r *http.Request, body []byte, SLACK_VERIFY_TOKEN string) {
 	var jsonbody map[string]interface{}
 	err := json.Unmarshal(body, &jsonbody)
 	if err != nil {
@@ -62,6 +56,19 @@ func varify(w http.ResponseWriter, r *http.Request, body []byte) {
 }
 
 func main() {
+	config_buf, err := os.ReadFile("./config.yaml")
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	var config_data map[string]string
+	err = yaml.Unmarshal(config_buf, &config_data)
+	var (
+		SLACK_API_TOKEN = config_data["SLACK_API_TOKEN"]
+		SLACK_VERIFY_TOKEN = config_data["SLACK_VERIFY_TOKEN"]
+		DISCORD_API_TOKEN = config_data["DISCORD_API_TOKEN"]
+		test_channel_id = config_data["test_channel_id"]
+	)
 	discord, err := discordgo.New("Bot " + DISCORD_API_TOKEN)
 	if err != nil {
 		fmt.Println("Error creating discord bot : ", err)
@@ -94,7 +101,7 @@ func main() {
 		}
 
 		if event.Type == "url_verification" {
-			varify(w, r, body)
+			varify(w, r, body, SLACK_VERIFY_TOKEN)
 			return
 		}
 
