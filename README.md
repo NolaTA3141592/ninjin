@@ -11,4 +11,5 @@ slackに送信した内容をdiscordに移してログを取りたい！
 - 画面左側からEvent Subscriptionを編集
 - Enable Eventsをonにする
 - Request URL に先ほどコピーしたngrokのURLを貼り付け
+- このURLの末尾に`/slack/events`を追加
 - ninjinを起動(ローカルでも、Dockerコンテナでも良い)
