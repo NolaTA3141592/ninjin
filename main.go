@@ -65,29 +65,26 @@ func main() {
 			return
 		}
 
-		if event.Type == "url_verification" {
-			SlackUtil.Verify(w, r, body, SLACK_VERIFY_TOKEN)
-			return
-		}
-
-		if event.Type == "event_callback" {
-			jsonbody2, ok := jsonbody["event"].(map[string]interface{})
-			if !ok {
-				http.Error(w, "Failed to parse json", http.StatusBadRequest)
-				return
-			}
-			if jsonbody2["type"] == "message" {
-				userid := jsonbody2["user"]
-				userinfo, err := api.GetUserInfo(userid.(string))	
-				if err != nil {
-					http.Error(w, "Failed to get user info", http.StatusInternalServerError)
+		
+		switch event.Type {
+			case "url_verification":
+				SlackUtil.Verify(w, r, body, SLACK_VERIFY_TOKEN)
+			case "event_callback":
+				jsonbody2, ok := jsonbody["event"].(map[string]interface{})
+				if !ok {
+					http.Error(w, "Failed to parse json", http.StatusBadRequest)
 					return
 				}
-				discord.ChannelMessageSend(test_channel_id, fmt.Sprintf("[%s]: %s", userinfo.RealName, jsonbody2["text"]))
-			}
-			return
+				if jsonbody2["type"] == "message" {
+					userid := jsonbody2["user"]
+					userinfo, err := api.GetUserInfo(userid.(string))	
+					if err != nil {
+						http.Error(w, "Failed to get user info", http.StatusInternalServerError)
+						return
+					}
+					discord.ChannelMessageSend(test_channel_id, fmt.Sprintf("[%s]: %s", userinfo.RealName, jsonbody2["text"]))
+				}
 		}
-
 		w.WriteHeader(http.StatusOK)
 	})
 
