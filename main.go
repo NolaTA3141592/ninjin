@@ -5,12 +5,12 @@ import (
 	"fmt"
 	"io"
 	"net/http"
-	"ninjin/util/SlackUtil"
+	"ninjin/util/slack"
 	"os"
 
 	"github.com/bwmarrin/discordgo"
 	"github.com/go-yaml/yaml"
-	"github.com/slack-go/slack"
+	slackgo "github.com/slack-go/slack"
 )
 
 type SlackEvent struct {
@@ -40,7 +40,7 @@ func main() {
 		return
 	}
 
-	api := slack.New(SLACK_API_TOKEN)
+	api := slackgo.New(SLACK_API_TOKEN)
 
 	SlackEventsEndPoint := "/slack/events"
 	
@@ -68,7 +68,7 @@ func main() {
 		
 		switch event.Type {
 			case "url_verification":
-				SlackUtil.Verify(w, r, body, SLACK_VERIFY_TOKEN)
+				slack.Verify(w, r, body, SLACK_VERIFY_TOKEN)
 			case "event_callback":
 				jsonbody2, ok := jsonbody["event"].(map[string]interface{})
 				if !ok {
