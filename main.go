@@ -34,7 +34,7 @@ func main() {
 		DISCORD_API_TOKEN = config_data["DISCORD_API_TOKEN"]
 		test_channel_id = config_data["test_channel_id"]
 	)
-	discord, err := discordgo.New("Bot " + DISCORD_API_TOKEN)
+	discordbot, err := discordgo.New("Bot " + DISCORD_API_TOKEN)
 	if err != nil {
 		fmt.Println("Error creating discord bot : ", err)
 		return
@@ -82,7 +82,7 @@ func main() {
 						http.Error(w, "Failed to get user info", http.StatusInternalServerError)
 						return
 					}
-					discord.ChannelMessageSend(test_channel_id, fmt.Sprintf("[%s]: %s", userinfo.RealName, jsonbody2["text"]))
+					discordbot.ChannelMessageSend(test_channel_id, fmt.Sprintf("[%s]: %s", userinfo.RealName, jsonbody2["text"]))
 				}
 		}
 		w.WriteHeader(http.StatusOK)
@@ -96,12 +96,12 @@ func main() {
 		}
 	}()
 
-	err = discord.Open()
+	err = discordbot.Open()
 	if err != nil {
 		fmt.Println("Error opening Discord session:", err)
 		return
 	}
-	defer discord.Close()
+	defer discordbot.Close()
 
 	select {}
 }
