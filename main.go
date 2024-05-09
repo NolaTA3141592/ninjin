@@ -5,10 +5,10 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"ninjin/util/discord"
 	slacktool "ninjin/util/slack"
 	"os"
 
-	"github.com/bwmarrin/discordgo"
 	"github.com/go-yaml/yaml"
 )
 
@@ -33,12 +33,14 @@ func main() {
 	}
 	var (
 		SLACK_VERIFY_TOKEN = config_data["SLACK_VERIFY_TOKEN"]
-		DISCORD_API_TOKEN = config_data["DISCORD_API_TOKEN"]
 		test_channel_id = config_data["test_channel_id"]
 	)
-	discordbot, err := discordgo.New("Bot " + DISCORD_API_TOKEN)
+
+	dr := discord.Router {
+		DISCORD_API_TOKEN: config_data["SLACK_VERIFY_TOKEN"],
+	}
+	err = dr.Setup()
 	if err != nil {
-		fmt.Println("Error creating discord bot : ", err)
 		return
 	}
 
@@ -91,7 +93,7 @@ func main() {
 						http.Error(w, "Failed to get user info", http.StatusInternalServerError)
 						return
 					}
-					discordbot.ChannelMessageSend(test_channel_id, fmt.Sprintf("[%s]: %s", user.RealName, jsonbody2["text"]))
+					dr.Bot.ChannelMessageSend(test_channel_id, fmt.Sprintf("[%s]: %s", user.RealName, jsonbody2["text"]))
 				}
 		}
 		w.WriteHeader(http.StatusOK)
@@ -105,12 +107,6 @@ func main() {
 		}
 	}()
 
-	err = discordbot.Open()
-	if err != nil {
-		fmt.Println("Error opening Discord session:", err)
-		return
-	}
-	defer discordbot.Close()
-
+	defer dr.Bot.Close()
 	select {}
 }
