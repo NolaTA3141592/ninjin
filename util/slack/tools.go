@@ -4,9 +4,20 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+
+	slackgo "github.com/slack-go/slack"
 )
 
-func Verify(w http.ResponseWriter, r *http.Request, body []byte, SLACK_VERIFY_TOKEN string) {
+type SlackUtil struct {
+	SLACK_API_TOKEN	string
+}
+
+type User struct {
+	UserID	 string
+	RealName string
+}
+
+func (sl SlackUtil)Verify(w http.ResponseWriter, r *http.Request, body []byte, SLACK_VERIFY_TOKEN string) {
 	var jsonbody map[string]interface{}
 	err := json.Unmarshal(body, &jsonbody)
 	if err != nil {
@@ -40,4 +51,22 @@ func Verify(w http.ResponseWriter, r *http.Request, body []byte, SLACK_VERIFY_TO
 		fmt.Fprint(w, challenge)
 	}
 	w.WriteHeader((http.StatusOK))
+}
+
+func (sl SlackUtil) AttachUserInfo(user *User) error {
+	api := slackgo.New(sl.SLACK_API_TOKEN)
+	userinfo, err := api.GetUserInfo(user.UserID)
+	if err != nil {
+		return err
+	}
+	user.RealName = userinfo.RealName
+	return nil
+}
+
+func (sl SlackUtil) getEventType(body *[]byte) string {
+	return ""
+}
+
+func (sl SlackUtil) MessageParse() map[string]string {
+	return nil
 }

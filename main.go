@@ -5,12 +5,11 @@ import (
 	"fmt"
 	"io"
 	"net/http"
-	"ninjin/util/slack"
+	slacktool "ninjin/util/slack"
 	"os"
 
 	"github.com/bwmarrin/discordgo"
 	"github.com/go-yaml/yaml"
-	slackgo "github.com/slack-go/slack"
 )
 
 type SlackEvent struct {
@@ -28,8 +27,11 @@ func main() {
 	}
 	var config_data map[string]string
 	err = yaml.Unmarshal(config_buf, &config_data)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
 	var (
-		SLACK_API_TOKEN = config_data["SLACK_API_TOKEN"]
 		SLACK_VERIFY_TOKEN = config_data["SLACK_VERIFY_TOKEN"]
 		DISCORD_API_TOKEN = config_data["DISCORD_API_TOKEN"]
 		test_channel_id = config_data["test_channel_id"]
@@ -40,7 +42,9 @@ func main() {
 		return
 	}
 
-	api := slackgo.New(SLACK_API_TOKEN)
+	slack := slacktool.SlackUtil {
+		SLACK_API_TOKEN: 	config_data["SLACK_API_TOKEN"],
+	}
 
 	SlackEventsEndPoint := "/slack/events"
 	
@@ -76,13 +80,18 @@ func main() {
 					return
 				}
 				if jsonbody2["type"] == "message" {
-					userid := jsonbody2["user"]
-					userinfo, err := api.GetUserInfo(userid.(string))	
+					user := slacktool.User {
+						UserID: jsonbody2["user"].(string),
+					}
+					slack.AttachUserInfo(&user)
+					// userid := jsonbody2["user"]
+					// userinfo, err := api.GetUserInfo(userid.(string))	
+					
 					if err != nil {
 						http.Error(w, "Failed to get user info", http.StatusInternalServerError)
 						return
 					}
-					discordbot.ChannelMessageSend(test_channel_id, fmt.Sprintf("[%s]: %s", userinfo.RealName, jsonbody2["text"]))
+					discordbot.ChannelMessageSend(test_channel_id, fmt.Sprintf("[%s]: %s", user.RealName, jsonbody2["text"]))
 				}
 		}
 		w.WriteHeader(http.StatusOK)
