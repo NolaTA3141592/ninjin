@@ -70,7 +70,6 @@ func main() {
 			http.Error(w, "Failed to parse json", http.StatusBadRequest)
 			return
 		}
-
 		
 		switch event.Type {
 			case "url_verification":
@@ -86,9 +85,6 @@ func main() {
 						UserID: jsonbody2["user"].(string),
 					}
 					slack.AttachUserInfo(&user)
-					// userid := jsonbody2["user"]
-					// userinfo, err := api.GetUserInfo(userid.(string))	
-					
 					if err != nil {
 						http.Error(w, "Failed to get user info", http.StatusInternalServerError)
 						return
