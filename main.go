@@ -37,7 +37,7 @@ func main() {
 	)
 
 	dr := discord.Router {
-		DISCORD_API_TOKEN: config_data["SLACK_VERIFY_TOKEN"],
+		DISCORD_API_TOKEN: config_data["DISCORD_API_TOKEN"],
 	}
 	err = dr.Setup()
 	if err != nil {
