@@ -15,6 +15,11 @@ type SlackUtil struct {
 type User struct {
 	UserID	 string
 	RealName string
+	Profile  UserProfile
+}
+
+type UserProfile struct {
+	DisplayName string
 }
 
 func (sl SlackUtil)Verify(w http.ResponseWriter, r *http.Request, body []byte, SLACK_VERIFY_TOKEN string) {
@@ -59,7 +64,7 @@ func (sl SlackUtil) AttachUserInfo(user *User) error {
 	if err != nil {
 		return err
 	}
-	user.RealName = sl.GetUserName(userinfo)
+	user.RealName = GetUserName(userinfo)
 	return nil
 }
 

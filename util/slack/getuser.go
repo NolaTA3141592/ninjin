@@ -1,10 +1,10 @@
 package slack
 
-func (sl SlackUtil) GetUserName(userinfo *User) error {
-	if userinfo.Profile.DisplayName != nil{
+func GetUserName(userinfo *User) (string) {
+	if userinfo.Profile.DisplayName != ""{
 		return userinfo.Profile.DisplayName
 	} else {
 		return userinfo.RealName
 	}
-	return nil
+	return ""
 }
