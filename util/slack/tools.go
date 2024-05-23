@@ -15,11 +15,6 @@ type SlackUtil struct {
 type User struct {
 	UserID	 string
 	RealName string
-	Profile  UserProfile
-}
-
-type UserProfile struct {
-	DisplayName string
 }
 
 func (sl SlackUtil)Verify(w http.ResponseWriter, r *http.Request, body []byte, SLACK_VERIFY_TOKEN string) {
