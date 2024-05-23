@@ -59,7 +59,7 @@ func (sl SlackUtil) AttachUserInfo(user *User) error {
 	if err != nil {
 		return err
 	}
-	user.RealName = userinfo.RealName
+	user.RealName = sl.GetUserName(userinfo)
 	return nil
 }
 
