@@ -33,11 +33,11 @@ func main() {
 	}
 	var (
 		SLACK_VERIFY_TOKEN = config_data["SLACK_VERIFY_TOKEN"]
-		test_channel_id = config_data["test_channel_id"]
 	)
 
 	dr := discord.Router {
 		DISCORD_API_TOKEN: config_data["DISCORD_API_TOKEN"],
+		TEST_CHANNEL_ID: config_data["test_channel_id"],
 	}
 	err = dr.Setup()
 	if err != nil {
@@ -89,7 +89,7 @@ func main() {
 						http.Error(w, "Failed to get user info", http.StatusInternalServerError)
 						return
 					}
-					dr.Bot.ChannelMessageSend(test_channel_id, fmt.Sprintf("[%s]: %s", user.RealName, jsonbody2["text"]))
+					dr.EventMassage(&user, jsonbody2["text"].(string))
 				}
 		}
 		w.WriteHeader(http.StatusOK)
