@@ -30,6 +30,6 @@ func (r *Router) Setup() error {
 	return nil
 }
 
-func (r *Router) Execute(user *slack.User, msg string) {
+func (r *Router) EventMassage(user *slack.User, msg string) {
 	r.Bot.ChannelMessageSend(r.TEST_CHANNEL_ID, fmt.Sprintf("[%s]: %s", user.RealName, msg))
 }
