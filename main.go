@@ -89,7 +89,6 @@ func main() {
 						http.Error(w, "Failed to get user info", http.StatusInternalServerError)
 						return
 					}
-					// dr.Bot.ChannelMessageSend(test_channel_id, fmt.Sprintf("[%s]: %s", user.RealName, jsonbody2["text"]))
 					dr.Execute(&user, jsonbody2["text"].(string))
 				}
 		}
