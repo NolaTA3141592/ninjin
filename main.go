@@ -89,7 +89,7 @@ func main() {
 						http.Error(w, "Failed to get user info", http.StatusInternalServerError)
 						return
 					}
-					dr.Execute(&user, jsonbody2["text"].(string))
+					dr.EventMassage(&user, jsonbody2["text"].(string))
 				}
 		}
 		w.WriteHeader(http.StatusOK)
