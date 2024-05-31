@@ -11,6 +11,7 @@ type Router struct {
 	DISCORD_API_TOKEN	string
 	TEST_CHANNEL_ID		string
 	Bot  				*discordgo.Session
+	SERVER_ID 			string
 }
 
 func (r *Router) Setup() error {
@@ -25,6 +26,13 @@ func (r *Router) Setup() error {
 	if err != nil {
 		fmt.Println("Error opening Discord session:", err)
 		return err
+	}
+
+	r.SERVER_ID = ""
+	webhooks, err := r.GetWebhookList()
+	fmt.Println(webhooks)
+	if err != nil {
+		fmt.Println("Error getting webhook list : ", err)
 	}
 
 	return nil
