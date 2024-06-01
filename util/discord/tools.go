@@ -12,6 +12,7 @@ type Router struct {
 	TEST_CHANNEL_ID		string
 	Bot  				*discordgo.Session
 	SERVER_ID 			string
+	webhooks			[]Webhook
 }
 
 func (r *Router) Setup() error {
@@ -29,8 +30,7 @@ func (r *Router) Setup() error {
 	}
 
 	r.SERVER_ID = "1202873405221773343"
-	webhooks, err := r.GetWebhookList()
-	fmt.Println(webhooks)
+	r.webhooks, err = r.GetWebhookList()
 	if err != nil {
 		fmt.Println("Error getting webhook list : ", err)
 	}
