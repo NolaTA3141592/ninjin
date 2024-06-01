@@ -7,7 +7,7 @@ import (
 )
 
 const (
-    DiscordAPIURL = "https://discord.com/api/v9"
+    DiscordAPIURL = "https://discord.com/api/"
 )
 
 type Webhook struct {
@@ -46,7 +46,6 @@ func (r *Router) GetWebhookList() ([]Webhook, error) {
             continue
         }
         webhooks[i].ChannelName = channelname
-		fmt.Printf("%s", channelname)
     }
 
 	return webhooks, nil
