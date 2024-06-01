@@ -12,6 +12,7 @@ const (
 
 type Webhook struct {
     ID   string `json:"id"`
+	TOKEN string `json:"token"`
     Name string `json:"name"`
 	ChannelID string `json:"channel_id"`
 	ChannelName string
