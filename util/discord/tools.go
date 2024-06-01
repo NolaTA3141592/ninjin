@@ -28,7 +28,7 @@ func (r *Router) Setup() error {
 		return err
 	}
 
-	r.SERVER_ID = ""
+	r.SERVER_ID = "1202873405221773343"
 	webhooks, err := r.GetWebhookList()
 	fmt.Println(webhooks)
 	if err != nil {
