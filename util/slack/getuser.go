@@ -10,5 +10,4 @@ func GetUserName(userinfo *slackgo.User) (string) {
 	} else {
 		return userinfo.RealName
 	}
-	return ""
 }
