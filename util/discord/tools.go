@@ -11,6 +11,8 @@ type Router struct {
 	DISCORD_API_TOKEN	string
 	TEST_CHANNEL_ID		string
 	Bot  				*discordgo.Session
+	SERVER_ID 			string
+	webhooks			[]Webhook
 }
 
 func (r *Router) Setup() error {
@@ -27,9 +29,15 @@ func (r *Router) Setup() error {
 		return err
 	}
 
+	r.SERVER_ID = "1202873405221773343"
+	r.webhooks, err = r.GetWebhookList()
+	if err != nil {
+		fmt.Println("Error getting webhook list : ", err)
+	}
+
 	return nil
 }
 
 func (r *Router) EventMassage(user *slack.User, msg string) {
-	r.Bot.ChannelMessageSend(r.TEST_CHANNEL_ID, fmt.Sprintf("[%s]: %s", user.RealName, msg))
+	r.MessageSend(user, msg)
 }
