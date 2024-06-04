@@ -11,18 +11,17 @@ import (
 type WebhookMessage struct {
 	Content 		string `json:"content"`
 	Username		string `json:"username"`
-	avatar	 		string `json:"avatar_url"`
+	Avatar	 		string `json:"avatar_url"`
 }
 
 func (r *Router) MessageSend(user *slack.User, msg string) {
 	webhook := r.webhooks[0]
 	WebhookURL := fmt.Sprintf("https://discord.com/api/webhooks/%s/%s", webhook.ID, webhook.TOKEN)
-	usericon := "https://github.com/qiita.png"
-	fmt.Println(usericon)
+	usericon := user.Profile.Image512
 	whm := WebhookMessage {
 		Content: msg,
 		Username: user.RealName,
-		avatar: usericon,
+		Avatar: usericon,
 	}
 	msgByte, err := json.Marshal(whm)
 	if err != nil {
