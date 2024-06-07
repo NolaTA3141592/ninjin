@@ -14,7 +14,7 @@ func (db *Mdb) Insert(SlackMessageID string, DiscordMessageID string) (error) {
 
 func (db *Mdb) Query(slackID string) (string, error) {
     var discordID string
-    sqlStatement := `SELECT name FROM users WHERE id=$1`
+    sqlStatement := `SELECT discordID FROM slackID WHERE id=$1`
     row := db.Data.QueryRow(sqlStatement, slackID)
     err := row.Scan(&discordID)
     if err != nil {
