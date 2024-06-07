@@ -4,7 +4,7 @@ services:
     image: postgres:13
     environment:
       POSTGRES_DB: MessageDatabase
-      POSTGRES_USER: user
+      POSTGRES_USER: root
       POSTGRES_PASSWORD: password
     ports:
       - "5432:5432"
@@ -18,7 +18,7 @@ services:
     environment:
       DB_HOST: db
       DB_PORT: 5432
-      DB_USER: user
+      DB_USER: root
       DB_PASSWORD: password
       DB_NAME: MessageDatabase
     volumes: 
