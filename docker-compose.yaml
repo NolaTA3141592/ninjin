@@ -1,7 +1,26 @@
 version: "3"
 services: 
-  golang:
+  db:
+    image: postgres:13
+    environment:
+      POSTGRES_DB: MessageDatabase
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./MessageData:/var/lib/postgresql/data
+
+  app:
     build: .
+    depends_on:
+      - db
+    environment:
+      DB_HOST: db
+      DB_PORT: 5432
+      DB_USER: user
+      DB_PASSWORD: password
+      DB_NAME: MessageDatabase
     volumes: 
       - ./:/app/ninjin
     ports: 
