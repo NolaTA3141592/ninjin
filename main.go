@@ -6,10 +6,12 @@ import (
 	"io"
 	"net/http"
 	"ninjin/util/discord"
+	"ninjin/util/mdb"
 	slacktool "ninjin/util/slack"
 	"os"
 
 	"github.com/go-yaml/yaml"
+	_ "github.com/lib/pq"
 )
 
 type SlackEvent struct {
@@ -50,6 +52,12 @@ func main() {
 
 	SlackEventsEndPoint := "/slack/events"
 	
+	db, err := mdb.Setup()
+	if err != nil {
+		return
+	}
+	defer db.Data.Close()
+
 	http.HandleFunc(SlackEventsEndPoint, func(w http.ResponseWriter, r *http.Request) {
 		body, err := io.ReadAll(r.Body)
 		if err != nil {
