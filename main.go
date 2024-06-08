@@ -79,6 +79,7 @@ func main() {
 			http.Error(w, "Failed to parse json", http.StatusBadRequest)
 			return
 		}
+		fmt.Println(jsonbody)
 		
 		switch event.Type {
 			case "url_verification":
@@ -101,7 +102,7 @@ func main() {
 						return
 					}
 					dr.EventMassage(&user, &msg)
-					db.Insert(msg.Slack_ID, msg.Discord_ID)
+					db.Insert(&msg)
 				}
 		}
 		w.WriteHeader(http.StatusOK)
