@@ -11,6 +11,7 @@ import (
 type WebhookMessage struct {
 	Content 		string `json:"content"`
 	Username		string `json:"username"`
+	Avatar	 		string `json:"avatar_url"`
 }
 
 func (r *Router) MessageSend(user *slack.User, msg string) {
@@ -19,6 +20,7 @@ func (r *Router) MessageSend(user *slack.User, msg string) {
 	whm := WebhookMessage {
 		Content: msg,
 		Username: user.RealName,
+		Avatar: user.Usericon,
 	}
 	msgByte, err := json.Marshal(whm)
 	if err != nil {
