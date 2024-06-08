@@ -15,9 +15,13 @@ type WebhookMessage struct {
 	Avatar	 		string `json:"avatar_url"`
 }
 
-func (r *Router) MessageSend(user *slack.User, msg *cls.Message) {
+type WebhookResponse struct {
+	ID 				string `json:"id"`
+}
+
+func (r *Router) MessageSend(user *slack.User, msg *cls.Message) (string) {
 	webhook := r.webhooks[0]
-	WebhookURL := fmt.Sprintf("https://discord.com/api/webhooks/%s/%s", webhook.ID, webhook.TOKEN)
+	WebhookURL := fmt.Sprintf("https://discord.com/api/webhooks/%s/%s?wait=true", webhook.ID, webhook.TOKEN)
 	whm := WebhookMessage {
 		Content: msg.Content,
 		Username: user.RealName,
@@ -26,12 +30,22 @@ func (r *Router) MessageSend(user *slack.User, msg *cls.Message) {
 	msgByte, err := json.Marshal(whm)
 	if err != nil {
 		fmt.Println("Error marshaling message : ", err)
-		return
+		return ""
 	}
 
 	resp, err := http.Post(WebhookURL, "application/json", bytes.NewBuffer(msgByte))
 	if err != nil {
 		fmt.Println("Error sending message : ", err)
+		return ""
 	}
 	defer resp.Body.Close()
+
+	// fmt.Println(resp.Body)
+	var respbody WebhookResponse
+    if err := json.NewDecoder(resp.Body).Decode(&respbody); err != nil {
+		fmt.Println("Error Decode Discord Response : ", err)
+        return ""
+    }
+
+	return respbody.ID
 }
