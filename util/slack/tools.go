@@ -15,7 +15,9 @@ type SlackUtil struct {
 type User struct {
 	UserID	 string
 	RealName string
+	Usericon  string
 }
+
 
 func (sl SlackUtil)Verify(w http.ResponseWriter, r *http.Request, body []byte, SLACK_VERIFY_TOKEN string) {
 	var jsonbody map[string]interface{}
@@ -60,6 +62,7 @@ func (sl SlackUtil) AttachUserInfo(user *User) error {
 		return err
 	}
 	user.RealName = GetUserName(userinfo)
+	user.Usericon = GetIcon(userinfo)
 	return nil
 }
 
