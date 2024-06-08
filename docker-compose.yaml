@@ -2,8 +2,9 @@ version: "3"
 services: 
   db:
     image: postgres:13
+    restart: always
     environment:
-      POSTGRES_DB: MessageDatabase
+      POSTGRES_DB: Database
       POSTGRES_USER: root
       POSTGRES_PASSWORD: password
     ports:
@@ -20,7 +21,7 @@ services:
       DB_PORT: 5432
       DB_USER: root
       DB_PASSWORD: password
-      DB_NAME: MessageDatabase
+      DB_NAME: Database
     volumes: 
       - ./:/app/ninjin
     ports: 
