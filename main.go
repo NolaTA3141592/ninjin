@@ -101,6 +101,7 @@ func main() {
 						return
 					}
 					dr.EventMassage(&user, &msg)
+					db.Insert(msg.Slack_ID, msg.Discord_ID)
 				}
 		}
 		w.WriteHeader(http.StatusOK)

@@ -2,8 +2,9 @@ package discord
 
 import (
 	"fmt"
-	"ninjin/util/slack"
 	"ninjin/util/cls"
+	"ninjin/util/slack"
+
 	"github.com/bwmarrin/discordgo"
 )
 
