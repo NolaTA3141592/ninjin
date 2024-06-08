@@ -19,7 +19,7 @@ type WebhookResponse struct {
 	ID 				string `json:"id"`
 }
 
-func (r *Router) MessageSend(user *slack.User, msg *cls.Message) (string) {
+func (r *Router) MessageSend(user *slack.User, msg *cls.Message) {
 	webhook := r.webhooks[0]
 	WebhookURL := fmt.Sprintf("https://discord.com/api/webhooks/%s/%s?wait=true", webhook.ID, webhook.TOKEN)
 	whm := WebhookMessage {
@@ -30,13 +30,13 @@ func (r *Router) MessageSend(user *slack.User, msg *cls.Message) (string) {
 	msgByte, err := json.Marshal(whm)
 	if err != nil {
 		fmt.Println("Error marshaling message : ", err)
-		return ""
+		return
 	}
 
 	resp, err := http.Post(WebhookURL, "application/json", bytes.NewBuffer(msgByte))
 	if err != nil {
 		fmt.Println("Error sending message : ", err)
-		return ""
+		return
 	}
 	defer resp.Body.Close()
 
@@ -44,8 +44,8 @@ func (r *Router) MessageSend(user *slack.User, msg *cls.Message) (string) {
 	var respbody WebhookResponse
     if err := json.NewDecoder(resp.Body).Decode(&respbody); err != nil {
 		fmt.Println("Error Decode Discord Response : ", err)
-        return ""
+        return
     }
 
-	return respbody.ID
+	msg.Discord_ID = respbody.ID
 }
