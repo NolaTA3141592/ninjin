@@ -1,4 +1,5 @@
 CREATE TABLE MessageDatabase (
     slackID TEXT PRIMARY KEY,
-    discordID TEXT
+    discordID TEXT,
+    ChannelName TEXT
 );
