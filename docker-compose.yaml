@@ -10,7 +10,7 @@ services:
     ports:
       - "5432:5432"
     volumes:
-      - ./MessageData:/var/lib/postgresql/data
+      - ./Database:/var/lib/postgresql/data
 
   app:
     build: .
