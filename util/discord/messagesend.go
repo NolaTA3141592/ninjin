@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"ninjin/util/cls"
 	"ninjin/util/slack"
 )
 
@@ -14,11 +15,11 @@ type WebhookMessage struct {
 	Avatar	 		string `json:"avatar_url"`
 }
 
-func (r *Router) MessageSend(user *slack.User, msg string) {
+func (r *Router) MessageSend(user *slack.User, msg *cls.Message) {
 	webhook := r.webhooks[0]
 	WebhookURL := fmt.Sprintf("https://discord.com/api/webhooks/%s/%s", webhook.ID, webhook.TOKEN)
 	whm := WebhookMessage {
-		Content: msg,
+		Content: msg.Content,
 		Username: user.RealName,
 		Avatar: user.Usericon,
 	}

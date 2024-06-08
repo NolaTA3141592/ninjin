@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"ninjin/util/cls"
 	"ninjin/util/discord"
 	"ninjin/util/mdb"
 	slacktool "ninjin/util/slack"
@@ -92,12 +93,14 @@ func main() {
 					user := slacktool.User {
 						UserID: jsonbody2["user"].(string),
 					}
+					msg := cls.Message{}
 					slack.AttachUserInfo(&user)
+					slack.AttachMessageInfo(&msg, jsonbody2)
 					if err != nil {
 						http.Error(w, "Failed to get user info", http.StatusInternalServerError)
 						return
 					}
-					dr.EventMassage(&user, jsonbody2["text"].(string))
+					dr.EventMassage(&user, &msg)
 				}
 		}
 		w.WriteHeader(http.StatusOK)
