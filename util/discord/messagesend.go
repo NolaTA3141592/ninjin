@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"ninjin/util/cls"
 	"ninjin/util/slack"
 )
 
@@ -14,11 +15,15 @@ type WebhookMessage struct {
 	Avatar	 		string `json:"avatar_url"`
 }
 
-func (r *Router) MessageSend(user *slack.User, msg string) {
+type WebhookResponse struct {
+	ID 				string `json:"id"`
+}
+
+func (r *Router) MessageSend(user *slack.User, msg *cls.Message) {
 	webhook := r.webhooks[0]
-	WebhookURL := fmt.Sprintf("https://discord.com/api/webhooks/%s/%s", webhook.ID, webhook.TOKEN)
+	WebhookURL := fmt.Sprintf("https://discord.com/api/webhooks/%s/%s?wait=true", webhook.ID, webhook.TOKEN)
 	whm := WebhookMessage {
-		Content: msg,
+		Content: msg.Content,
 		Username: user.RealName,
 		Avatar: user.Usericon,
 	}
@@ -31,6 +36,16 @@ func (r *Router) MessageSend(user *slack.User, msg string) {
 	resp, err := http.Post(WebhookURL, "application/json", bytes.NewBuffer(msgByte))
 	if err != nil {
 		fmt.Println("Error sending message : ", err)
+		return
 	}
 	defer resp.Body.Close()
+
+	// fmt.Println(resp.Body)
+	var respbody WebhookResponse
+    if err := json.NewDecoder(resp.Body).Decode(&respbody); err != nil {
+		fmt.Println("Error Decode Discord Response : ", err)
+        return
+    }
+
+	msg.Discord_ID = respbody.ID
 }

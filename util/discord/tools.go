@@ -2,6 +2,7 @@ package discord
 
 import (
 	"fmt"
+	"ninjin/util/cls"
 	"ninjin/util/slack"
 
 	"github.com/bwmarrin/discordgo"
@@ -38,6 +39,6 @@ func (r *Router) Setup() error {
 	return nil
 }
 
-func (r *Router) EventMassage(user *slack.User, msg string) {
+func (r *Router) EventMassage(user *slack.User, msg *cls.Message) {
 	r.MessageSend(user, msg)
 }

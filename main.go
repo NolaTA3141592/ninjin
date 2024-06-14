@@ -5,11 +5,14 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"ninjin/util/cls"
 	"ninjin/util/discord"
+	"ninjin/util/mdb"
 	slacktool "ninjin/util/slack"
 	"os"
 
 	"github.com/go-yaml/yaml"
+	_ "github.com/lib/pq"
 )
 
 type SlackEvent struct {
@@ -50,6 +53,12 @@ func main() {
 
 	SlackEventsEndPoint := "/slack/events"
 	
+	db, err := mdb.Setup()
+	if err != nil {
+		return
+	}
+	defer db.Data.Close()
+
 	http.HandleFunc(SlackEventsEndPoint, func(w http.ResponseWriter, r *http.Request) {
 		body, err := io.ReadAll(r.Body)
 		if err != nil {
@@ -70,6 +79,7 @@ func main() {
 			http.Error(w, "Failed to parse json", http.StatusBadRequest)
 			return
 		}
+		fmt.Println(jsonbody)
 		
 		switch event.Type {
 			case "url_verification":
@@ -84,12 +94,15 @@ func main() {
 					user := slacktool.User {
 						UserID: jsonbody2["user"].(string),
 					}
+					msg := cls.Message{}
 					slack.AttachUserInfo(&user)
+					slack.AttachMessageInfo(&msg, jsonbody2)
 					if err != nil {
 						http.Error(w, "Failed to get user info", http.StatusInternalServerError)
 						return
 					}
-					dr.EventMassage(&user, jsonbody2["text"].(string))
+					dr.EventMassage(&user, &msg)
+					db.Insert(&msg)
 				}
 		}
 		w.WriteHeader(http.StatusOK)
