@@ -48,7 +48,6 @@ func (r *Router) MessageSend(user *slack.User, msg *cls.Message) {
 		fmt.Println("Error marshaling message : ", err)
 		return
 	}
-	fmt.Println(string(msgByte))
 
 	resp, err := http.Post(WebhookURL, "application/json", bytes.NewBuffer(msgByte))
 	if err != nil {
