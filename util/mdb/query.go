@@ -18,6 +18,17 @@ func (db *Mdb) Insert(msg *cls.Message) (error) {
 	return err
 }
 
+func (db *Mdb) InsertThread(slackThreadID string, discordthreadID string) (error) {
+	sqlStatement := `
+    INSERT INTO ThreadDatabase (slackThreadID, siscordThreadID)
+    VALUES ($1, $2)`	
+	_, err := db.Data.Exec(sqlStatement, slackThreadID, discordthreadID)
+	if err != nil {
+		fmt.Println("DB Insert error : ", err)
+	}
+	return err
+}
+
 func (db *Mdb) QueryMessageID(slackID string) (string, error) {
     var discordID string
     sqlStatement := `SELECT discordID FROM MessageDatabase WHERE slackID = $1`
@@ -38,4 +49,15 @@ func (db *Mdb) QueryChannelName(slackID string) (string, error) {
         return "", err
     }
     return ChannelName, nil
+}
+
+func (db *Mdb) QueryThreadID(slackThreadID string) (string, error) {
+    var discordThreadID string
+    sqlStatement := `SELECT ChannelName FROM MessageDatabase WHERE slackID = $1`
+    row := db.Data.QueryRow(sqlStatement, slackThreadID)
+    err := row.Scan(&discordThreadID)
+    if err != nil {
+        return "", err
+    }
+    return discordThreadID, nil
 }
