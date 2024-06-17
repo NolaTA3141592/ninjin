@@ -79,7 +79,6 @@ func main() {
 			http.Error(w, "Failed to parse json", http.StatusBadRequest)
 			return
 		}
-		fmt.Println(jsonbody)
 		
 		switch event.Type {
 			case "url_verification":

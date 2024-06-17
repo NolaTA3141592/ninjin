@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"fmt"
 	"os"
+	"time"
 )
 
 type Mdb struct {
@@ -19,6 +20,8 @@ func Setup() (Mdb, error) {
 
     psqlInfo := fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=disable",
         dbHost, dbPort, dbUser, dbPassword, dbName)
+	
+	time.Sleep(10 * time.Second)
 
     db, err := sql.Open("postgres", psqlInfo)
     if err != nil {

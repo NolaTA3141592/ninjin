@@ -5,4 +5,6 @@ type Message struct {
 	Slack_ID	string
 	Discord_ID	string
 	ChannelName	string
+	FileURL		string
+	FileName	string
 }
