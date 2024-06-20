@@ -18,6 +18,9 @@ func (sl SlackUtil) AttachMessageInfo(msg *cls.Message, data map[string]interfac
 				if thumbs, ok := fileMap["thumb_360"]; ok {
 					msg.FileURL = thumbs.(string)
 				}
+				if other, ok := fileMap["url_private"]; ok {
+					msg.FileURL = other.(string)
+				}
 			}
 		}
 	}
