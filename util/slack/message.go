@@ -3,9 +3,16 @@ package slack
 import (
 	"fmt"
 	"ninjin/util/cls"
+	"regexp"
 
 	slackgo "github.com/nlopes/slack"
+	slackgo2 "github.com/slack-go/slack"
 )
+
+type Mentions struct {
+	UserID   		[]string
+	UserName 		[]string
+}
 
 func (sl SlackUtil) AttachMessageInfo(msg *cls.Message, data map[string]interface{}) error {
 	msg.Content = data["text"].(string)
@@ -32,6 +39,31 @@ func (sl SlackUtil) AttachMessageInfo(msg *cls.Message, data map[string]interfac
 			}
 		}
 	}
+
+	re := regexp.MustCompile(`<@[A-Z0-9]{11}>`)
+
+	matches := re.FindAllString(msg.Content, -1)
+
+	mentions := Mentions{
+		UserID:   []string{},
+		UserName: []string{},
+	}
+
+	mentions.UserID = append(mentions.UserID, matches...)
+
+	for _, userID := range mentions.UserID {
+		api := slackgo2.New(sl.SLACK_API_TOKEN)
+		userinfo, err := api.GetUserInfo(userID)
+		if err != nil {
+			fmt.Printf("Error fetching user info for %s: %v\n", userID, err)
+			continue
+		}
+		usernames := GetUserName(userinfo)
+		mentions.UserName = append(mentions.UserName, usernames)
+	}
+
+	fmt.Println(mentions)
+
 
 	return nil
 }
