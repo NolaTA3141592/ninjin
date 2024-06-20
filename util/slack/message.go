@@ -64,8 +64,7 @@ func (sl SlackUtil) AttachMessageInfo(msg *cls.Message, data map[string]interfac
 		api := slackgo2.New(sl.SLACK_API_TOKEN)
 		userinfo, err := api.GetUserInfo(userID)
 		if err != nil {
-			fmt.Printf("Error fetching user info for %s: %v\n", userID, err)
-			continue
+			return err
 		}
 		usernames := GetUserName(userinfo)
 		mentions.UserName = append(mentions.UserName, usernames)
@@ -76,7 +75,7 @@ func (sl SlackUtil) AttachMessageInfo(msg *cls.Message, data map[string]interfac
 		replacement := fmt.Sprintf("@%s", mentions.UserName[i])
 		msg.Content = re.ReplaceAllString(msg.Content, replacement)
 	}
-	
+
 	return nil
 }
 
