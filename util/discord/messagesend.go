@@ -34,12 +34,13 @@ func (r *Router) MessageSend(user *slack.User, msg *cls.Message) {
 		Avatar: user.Usericon,
 	}
 
-	if msg.FileURL != "" && msg.FileName != ""{
-		whm.Embeds = []Embed{
-			{
-				Title: msg.FileName,
-				URL: msg.FileURL,
-			},
+	for i := 0; i < len(msg.FileNames) && i < len(msg.FileURLs); i++ {
+		if msg.FileURLs[i] != "" && msg.FileNames[i] != "" {
+			embed := Embed{
+				Title: msg.FileNames[i],
+				URL:   msg.FileURLs[i],
+			}
+			whm.Embeds = append(whm.Embeds, embed)
 		}
 	}
 

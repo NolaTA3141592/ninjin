@@ -11,25 +11,23 @@ func (sl SlackUtil) AttachMessageInfo(msg *cls.Message, data map[string]interfac
 	msg.Content = data["text"].(string)
 	msg.Slack_ID = data["ts"].(string)
 	msg.ChannelName = sl.GetChannelNameByID(data["channel"].(string))
-	msg.FileURL = ""
 	if files, ok := data["files"].([]interface{}); ok {
 		for _, file := range files {
 			if fileMap, ok := file.(map[string]interface{}); ok {
 				if thumbs, ok := fileMap["thumb_360"]; ok {
-					msg.FileURL = thumbs.(string)
+					msg.FileURLs = append(msg.FileURLs, thumbs.(string))
 				}
 				if other, ok := fileMap["url_private"]; ok {
-					msg.FileURL = other.(string)
+					msg.FileURLs = append(msg.FileURLs, other.(string))
 				}
 			}
 		}
 	}
-	msg.FileName = ""
 	if files, ok := data["files"].([]interface{}); ok {
 		for _, file := range files {
 			if fileMap, ok := file.(map[string]interface{}); ok {
 				if name, ok := fileMap["name"]; ok {
-					msg.FileName = name.(string)
+					msg.FileNames = append(msg.FileNames, name.(string))
 				}
 			}
 		}

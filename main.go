@@ -84,6 +84,9 @@ func main() {
 			case "url_verification":
 				slack.Verify(w, r, body, SLACK_VERIFY_TOKEN)
 			case "event_callback":
+
+				fmt.Println(jsonbody)
+				
 				jsonbody2, ok := jsonbody["event"].(map[string]interface{})
 				if !ok {
 					http.Error(w, "Failed to parse json", http.StatusBadRequest)
