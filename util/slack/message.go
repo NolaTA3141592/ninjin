@@ -10,7 +10,8 @@ import (
 )
 
 type Mentions struct {
-	UserID   		[]string
+	UserID_row 		[]string
+	UserID_list   	[]string
 	UserName 		[]string
 }
 
@@ -45,13 +46,21 @@ func (sl SlackUtil) AttachMessageInfo(msg *cls.Message, data map[string]interfac
 	matches := re.FindAllString(msg.Content, -1)
 
 	mentions := Mentions{
-		UserID:   []string{},
+		UserID_row:   []string{},
+		UserID_list:   []string{},
 		UserName: []string{},
 	}
 
-	mentions.UserID = append(mentions.UserID, matches...)
+	mentions.UserID_row = append(mentions.UserID_row, matches...)
 
-	for _, userID := range mentions.UserID {
+	re = regexp.MustCompile(`<@(.*?)>`)
+
+	for _, match := range mentions.UserID_row {
+		userID := re.FindStringSubmatch(match)[1]
+		mentions.UserID_list = append(mentions.UserID_list, userID)
+	}
+
+	for _, userID := range mentions.UserID_list {
 		api := slackgo2.New(sl.SLACK_API_TOKEN)
 		userinfo, err := api.GetUserInfo(userID)
 		if err != nil {
@@ -62,9 +71,12 @@ func (sl SlackUtil) AttachMessageInfo(msg *cls.Message, data map[string]interfac
 		mentions.UserName = append(mentions.UserName, usernames)
 	}
 
-	fmt.Println(mentions)
-
-
+	for i := 0; i < len(mentions.UserID_list); i++ {
+		re := regexp.MustCompile(fmt.Sprintf("@%s", mentions.UserID_list[i]))
+		replacement := fmt.Sprintf("@%s", mentions.UserName[i])
+		msg.Content = re.ReplaceAllString(msg.Content, replacement)
+	}
+	
 	return nil
 }
 
