@@ -53,7 +53,7 @@ func (db *Mdb) QueryChannelName(slackID string) (string, error) {
 
 func (db *Mdb) QueryThreadID(slackThreadID string) (string, error) {
     var discordThreadID string
-    sqlStatement := `SELECT ChannelName FROM MessageDatabase WHERE slackID = $1`
+    sqlStatement := `SELECT discordThreadID FROM ThreadDatabase WHERE slackThreadID = $1`
     row := db.Data.QueryRow(sqlStatement, slackThreadID)
     err := row.Scan(&discordThreadID)
     if err != nil {
