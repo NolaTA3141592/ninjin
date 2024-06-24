@@ -23,7 +23,11 @@ func (sl SlackUtil) AttachMessageInfo(msg *cls.Message, data map[string]interfac
 	msg.FileNames = sl.GetFileNames(msg, data)
 	msg.Content = sl.ReplaceMentions(msg)
 	msg.SlackChannelID = data["channel"].(string)
+	msg.ThreadMode = sl.ContainsThreadTS(data)
 
+	if msg.ThreadMode {
+		msg.Slack_parent_ID = data["thread_ts"].(string)
+	}
 	return nil
 }
 
@@ -102,4 +106,9 @@ func (sl SlackUtil) ReplaceMentions(msg *cls.Message) string {
 		message = re.ReplaceAllString(message, replacement)
 	}
 	return message
+}
+
+func (sl SlackUtil) ContainsThreadTS(data map[string]interface{}) bool {
+	_, exist := data["thread_ts"]
+	return exist
 }
