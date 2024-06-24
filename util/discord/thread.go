@@ -7,7 +7,7 @@ import (
 )
 
 func (r *Router) MakeThread(DiscordChannelID string, DiscordMessageID string) (string, error) {
-	ch, err := r.Bot.MessageThreadStart(DiscordChannelID, DiscordMessageID, "", 4320)
+	ch, err := r.Bot.MessageThreadStart(DiscordChannelID, DiscordMessageID, "スレッド", 4320)
 	if err != nil {
 		fmt.Println("Error MakeThread ", err)
 		return "", err

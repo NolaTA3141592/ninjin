@@ -20,7 +20,7 @@ func (db *Mdb) Insert(msg *cls.Message) (error) {
 
 func (db *Mdb) InsertThread(slackThreadID string, discordthreadID string) (error) {
 	sqlStatement := `
-    INSERT INTO ThreadDatabase (slackThreadID, siscordThreadID)
+    INSERT INTO ThreadDatabase (slackThreadID, discordThreadID)
     VALUES ($1, $2)`	
 	_, err := db.Data.Exec(sqlStatement, slackThreadID, discordthreadID)
 	if err != nil {

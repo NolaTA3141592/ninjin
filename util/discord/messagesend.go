@@ -27,6 +27,9 @@ type WebhookResponse struct {
 
 func (r *Router) MessageSend(user *slack.User, msg *cls.Message, webhook *Webhook) {
 	WebhookURL := fmt.Sprintf("https://discord.com/api/webhooks/%s/%s?wait=true", webhook.ID, webhook.TOKEN)
+	if msg.ThreadMode {
+		WebhookURL += fmt.Sprintf("&thread_id=%s", msg.Discord_thread_ID)
+	}
 	whm := WebhookMessage {
 		Content: msg.Content,
 		Username: user.RealName,
@@ -56,7 +59,6 @@ func (r *Router) MessageSend(user *slack.User, msg *cls.Message, webhook *Webhoo
 	}
 	defer resp.Body.Close()
 
-	// fmt.Println(resp.Body)
 	var respbody WebhookResponse
     if err := json.NewDecoder(resp.Body).Decode(&respbody); err != nil {
 		fmt.Println("Error Decode Discord Response : ", err)
