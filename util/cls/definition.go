@@ -7,4 +7,6 @@ type Message struct {
 	ChannelName	string
 	FileURLs	[]string
 	FileNames	[]string
+	SlackChannelID	string
+	DiscordChannelID	string
 }
