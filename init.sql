@@ -9,6 +9,7 @@ CREATE TABLE MessageDatabase (
 CREATE TABLE ThreadDatabase (
     slackThreadID TEXT PRIMARY KEY,
     discordThreadID TEXT,
+    ChannelName TEXT,
     slackChannelID TEXT,
     discordChannelID TEXT
 );
