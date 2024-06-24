@@ -9,9 +9,9 @@ import (
 
 func (db *Mdb) Insert(msg *cls.Message) (error) {
 	sqlStatement := `
-    INSERT INTO MessageDatabase (slackID, discordID, ChannelName)
-    VALUES ($1, $2, $3)`	
-	_, err := db.Data.Exec(sqlStatement, msg.Slack_ID, msg.Discord_ID, msg.ChannelName)
+    INSERT INTO MessageDatabase (slackID, discordID, ChannelName, slackChannelID, discordChannelID)
+    VALUES ($1, $2, $3, $4, $5)`	
+	_, err := db.Data.Exec(sqlStatement, msg.Slack_ID, msg.Discord_ID, msg.ChannelName, msg.SlackChannelID, msg.DiscordChannelID)
 	if err != nil {
 		fmt.Println("DB Insert error : ", err)
 	}
