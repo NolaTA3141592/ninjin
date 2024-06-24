@@ -11,4 +11,5 @@ type Message struct {
 	DiscordChannelID	string
 	ThreadMode	bool
 	Slack_parent_ID	string
+	Discord_thread_ID	string
 }

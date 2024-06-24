@@ -100,7 +100,7 @@ func main() {
 						http.Error(w, "Failed to get user info", http.StatusInternalServerError)
 						return
 					}
-					dr.EventMassage(&user, &msg)
+					dr.EventMassage(&user, &msg, &db)
 					db.Insert(&msg)
 				}
 		}
