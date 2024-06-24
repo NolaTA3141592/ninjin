@@ -7,4 +7,9 @@ type Message struct {
 	ChannelName	string
 	FileURLs	[]string
 	FileNames	[]string
+	SlackChannelID	string
+	DiscordChannelID	string
+	ThreadMode	bool
+	Slack_parent_ID	string
+	Discord_thread_ID	string
 }

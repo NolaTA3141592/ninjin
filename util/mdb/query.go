@@ -9,9 +9,20 @@ import (
 
 func (db *Mdb) Insert(msg *cls.Message) (error) {
 	sqlStatement := `
-    INSERT INTO MessageDatabase (slackID, discordID, ChannelName)
-    VALUES ($1, $2, $3)`	
-	_, err := db.Data.Exec(sqlStatement, msg.Slack_ID, msg.Discord_ID, msg.ChannelName)
+    INSERT INTO MessageDatabase (slackID, discordID, ChannelName, slackChannelID, discordChannelID)
+    VALUES ($1, $2, $3, $4, $5)`	
+	_, err := db.Data.Exec(sqlStatement, msg.Slack_ID, msg.Discord_ID, msg.ChannelName, msg.SlackChannelID, msg.DiscordChannelID)
+	if err != nil {
+		fmt.Println("DB Insert error : ", err)
+	}
+	return err
+}
+
+func (db *Mdb) InsertThread(slackThreadID string, discordthreadID string) (error) {
+	sqlStatement := `
+    INSERT INTO ThreadDatabase (slackThreadID, discordThreadID)
+    VALUES ($1, $2)`	
+	_, err := db.Data.Exec(sqlStatement, slackThreadID, discordthreadID)
 	if err != nil {
 		fmt.Println("DB Insert error : ", err)
 	}
@@ -38,4 +49,15 @@ func (db *Mdb) QueryChannelName(slackID string) (string, error) {
         return "", err
     }
     return ChannelName, nil
+}
+
+func (db *Mdb) QueryThreadID(slackThreadID string) (string, error) {
+    var discordThreadID string
+    sqlStatement := `SELECT discordThreadID FROM ThreadDatabase WHERE slackThreadID = $1`
+    row := db.Data.QueryRow(sqlStatement, slackThreadID)
+    err := row.Scan(&discordThreadID)
+    if err != nil {
+        return "", err
+    }
+    return discordThreadID, nil
 }
