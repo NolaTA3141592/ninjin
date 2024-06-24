@@ -65,11 +65,3 @@ func (sl SlackUtil) AttachUserInfo(user *User) error {
 	user.Usericon = GetIcon(userinfo)
 	return nil
 }
-
-func (sl SlackUtil) getEventType(body *[]byte) string {
-	return ""
-}
-
-func (sl SlackUtil) MessageParse() map[string]string {
-	return nil
-}
