@@ -25,8 +25,7 @@ type WebhookResponse struct {
 	ID 				string `json:"id"`
 }
 
-func (r *Router) MessageSend(user *slack.User, msg *cls.Message) {
-	webhook := r.webhooks[0]
+func (r *Router) MessageSend(user *slack.User, msg *cls.Message, webhook *Webhook) {
 	WebhookURL := fmt.Sprintf("https://discord.com/api/webhooks/%s/%s?wait=true", webhook.ID, webhook.TOKEN)
 	whm := WebhookMessage {
 		Content: msg.Content,

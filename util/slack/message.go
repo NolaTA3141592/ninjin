@@ -22,6 +22,7 @@ func (sl SlackUtil) AttachMessageInfo(msg *cls.Message, data map[string]interfac
 	msg.FileURLs = sl.GetFileURLs(msg, data)
 	msg.FileNames = sl.GetFileNames(msg, data)
 	msg.Content = sl.ReplaceMentions(msg)
+	msg.SlackChannelID = data["channel"].(string)
 
 	return nil
 }
