@@ -13,6 +13,12 @@ type WebhookMessage struct {
 	Content 		string `json:"content"`
 	Username		string `json:"username"`
 	Avatar	 		string `json:"avatar_url"`
+	Embeds			[]Embed `json:"embeds"`
+}
+
+type Embed struct {
+	Title			string `json:"title"`
+	URL				string `json:"url"`
 }
 
 type WebhookResponse struct {
@@ -27,6 +33,17 @@ func (r *Router) MessageSend(user *slack.User, msg *cls.Message) {
 		Username: user.RealName,
 		Avatar: user.Usericon,
 	}
+
+	for i := 0; i < len(msg.FileNames) && i < len(msg.FileURLs); i++ {
+		if msg.FileURLs[i] != "" && msg.FileNames[i] != "" {
+			embed := Embed{
+				Title: msg.FileNames[i],
+				URL:   msg.FileURLs[i],
+			}
+			whm.Embeds = append(whm.Embeds, embed)
+		}
+	}
+
 	msgByte, err := json.Marshal(whm)
 	if err != nil {
 		fmt.Println("Error marshaling message : ", err)
