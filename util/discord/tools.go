@@ -11,7 +11,6 @@ import (
 
 type Router struct {
 	DISCORD_API_TOKEN	string
-	TEST_CHANNEL_ID		string
 	Bot  				*discordgo.Session
 	SERVER_ID 			string
 	webhooks			[]Webhook
