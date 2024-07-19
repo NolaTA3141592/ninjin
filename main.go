@@ -40,6 +40,7 @@ func main() {
 
 	dr := discord.Router {
 		DISCORD_API_TOKEN: config_data["DISCORD_API_TOKEN"],
+		SERVER_ID: config_data["DISCORD_SERVER_ID"],
 	}
 	err = dr.Setup()
 	if err != nil {

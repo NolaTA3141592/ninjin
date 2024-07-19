@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"os"
 	"time"
+	_ "github.com/lib/pq"
 )
 
 type Mdb struct {
@@ -36,5 +37,27 @@ func Setup() (Mdb, error) {
 	}
 
 	fmt.Println("Successfully connecting DataBase!")
+
+	createTable := `
+	CREATE TABLE IF NOT EXISTS MessageDatabase (
+		slackID TEXT PRIMARY KEY,
+		discordID TEXT,
+		ChannelName TEXT,
+		slackChannelID TEXT,
+		discordChannelID TEXT
+	);
+
+	CREATE TABLE IF NOT EXISTS ThreadDatabase (
+		slackThreadID TEXT PRIMARY KEY,
+		discordThreadID TEXT,
+		ChannelName TEXT,
+		slackChannelID TEXT,
+		discordChannelID TEXT
+	);`
+
+	_, err = db.Exec(createTable)
+	if err != nil {
+		fmt.Println("error create table", err)
+	}
 	return Mdb{db}, nil
 }
