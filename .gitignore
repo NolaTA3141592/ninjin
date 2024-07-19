@@ -21,3 +21,5 @@
 go.work
 
 config.yaml
+
+.env

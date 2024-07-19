@@ -1,0 +1,12 @@
+#!/bin/sh
+
+# Generate config.yaml
+cat <<EOF > config.yaml
+SLACK_API_TOKEN: $SLACK_API_TOKEN
+SLACK_VERIFY_TOKEN: $SLACK_VERIFY_TOKEN
+DISCORD_API_TOKEN: $DISCORD_API_TOKEN
+DISCORD_SERVER_ID: $DISCORD_SERVER_ID
+EOF
+
+# Run ninjin
+/app/ninjin/main

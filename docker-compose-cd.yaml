@@ -1,0 +1,49 @@
+version: "3"
+services: 
+  db:
+    image: postgres:13
+    restart: always
+    environment:
+      POSTGRES_DB: Database
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: password
+    volumes:
+      - Database:/var/lib/postgresql/data
+    networks:
+      - ninjin
+
+  app:
+    image: ghcr.io/sohosai/ninjin:latest
+    depends_on:
+      - db
+    environment:
+      DB_HOST: db
+      DB_PORT: 5432
+      DB_USER: root
+      DB_PASSWORD: password
+      DB_NAME: Database
+      SLACK_API_TOKEN: ${SLACK_API_TOKEN}
+      SLACK_VERIFY_TOKEN: ${SLACK_VERIFY_TOKEN}
+      DISCORD_API_TOKEN: ${DISCORD_API_TOKEN}
+      DISCORD_SERVER_ID: ${DISCORD_SERVER_ID}
+    labels:
+      traefik.enable: "true"
+      traefik.docker.network: "portainer-traefik"
+      traefik.http.services.ninjin.loadbalancer.server.port: "3000"
+      traefik.http.routers.ninjin.rule: Host(`ninjin.playground.sohosai.com`)
+      traefik.http.routers.ninjin.entrypoints: websecure
+      traefik.http.routers.ninjin.tls.certresolver: leresolver
+    networks:
+      - portainer-traefik
+      - ninjin
+
+volumes:
+  Database:
+
+networks:
+  portainer-traefik:
+    name: portainer-traefik
+    external: true
+  ninjin:
+    name: ninjin
+    internal: true
