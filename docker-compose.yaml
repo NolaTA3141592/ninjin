@@ -10,7 +10,7 @@ services:
     ports:
       - "5432:5432"
     volumes:
-      - ./Database:/var/lib/postgresql/data
+      - Database:/var/lib/postgresql/data
       - ./init.sql:/docker-entrypoint-initdb.d/init.sql
 
   app:
@@ -29,3 +29,6 @@ services:
       -  "3000:3000"
     tty: true
     command: go run main.go
+
+volumes:
+  Database:
